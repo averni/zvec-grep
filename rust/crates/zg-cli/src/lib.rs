@@ -588,6 +588,8 @@ pub struct ServerArgs {
     pub stdio: bool,
     #[arg(long, value_name = "ADDRESS")]
     pub listen: Option<String>,
+    #[arg(long, env = "ZVEC_GREP_HOSTNAME")]
+    pub hostname: Option<String>,
     #[arg(long, env = "ZVEC_GREP_HOME")]
     pub home: Option<PathBuf>,
     #[arg(long, value_enum)]
@@ -611,6 +613,8 @@ pub enum ServerAction {
 pub struct ServerStartArgs {
     #[arg(long)]
     pub listen: Option<String>,
+    #[arg(long, env = "ZVEC_GREP_HOSTNAME")]
+    pub hostname: Option<String>,
     #[arg(long, env = "ZVEC_GREP_HOME")]
     pub home: Option<PathBuf>,
     #[arg(long, env = "ZVEC_GREP_MCP_TOOLSET", value_enum)]
@@ -1478,6 +1482,7 @@ fn server_plan(args: ServerArgs) -> Result<ServerPlan, CliError> {
         }
         return Ok(ServerPlan::Stdio(ServerStartArgs {
             listen: args.listen,
+            hostname: args.hostname.or_else(|| "localhost".to_owned().into()),
             home: args.home,
             mcp_toolset: match args.mcp_toolset {
                 Some(toolset) => Some(toolset),

@@ -117,12 +117,15 @@ pub(crate) async fn run_server(
             index_operations,
         ),
     };
+
     let mcp_config = StreamableHttpServerConfig::default()
         .with_cancellation_token(shutdown.child_token())
         .with_allowed_hosts([
             "localhost".to_owned(),
             "127.0.0.1".to_owned(),
             "::1".to_owned(),
+            "0.0.0.0".to_owned(),
+            config.hostname.to_owned(),
             config.listen.socket_addr().to_string(),
         ])
         .with_max_request_body_bytes(1024 * 1024);

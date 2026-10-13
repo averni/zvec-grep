@@ -201,6 +201,7 @@ async fn health_probe_timeout_does_not_interrupt_an_inflight_tool() {
             .parse()
             .expect("listen address"),
         home.path().to_owned(),
+        "localhost".to_owned(),
     );
     let mut instance = crate::controller::InstanceLock::acquire(&config)
         .await

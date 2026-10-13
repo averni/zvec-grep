@@ -245,8 +245,11 @@ async fn execute_install_plan(args: &zg_cli::InstallArgs) -> Result<(), Box<dyn 
 
 async fn start_installed_server(outcome: &InstallOutcome) -> Result<DaemonStatus, Box<dyn Error>> {
     let listen = zg_cli::resolve_server_listen()?.parse::<ListenAddress>()?;
+    let hostname = std::env::var_os("ZVEC_GREP_SERVER_HOSTNAME")
+        .map(|hostname| hostname.to_string_lossy().into_owned())
+        .unwrap_or_else(|| "localhost".to_owned());
     let home = zg_daemon::resolve_home(None)?;
-    let mut config = ServerConfig::new(listen, home);
+    let mut config = ServerConfig::new(listen, home, hostname);
     config.mcp_toolset = match outcome.mcp_toolset {
         Some(McpToolset::Agent) => Some(DaemonMcpToolset::Agent),
         Some(McpToolset::Full) => Some(DaemonMcpToolset::Full),
@@ -816,7 +819,8 @@ fn server_config(args: ServerStartArgs) -> Result<ServerConfig, Box<dyn Error>> 
     };
     let listen = address.parse::<ListenAddress>()?;
     let home = zg_daemon::resolve_home(args.home)?;
-    let mut config = ServerConfig::new(listen, home);
+    let hostname = args.hostname.unwrap_or_else(|| "localhost".to_owned());
+    let mut config = ServerConfig::new(listen, home, hostname);
     config.token_file = args.token_file;
     config.mcp_toolset = args.mcp_toolset.map(|toolset| match toolset {
         McpToolset::Agent => DaemonMcpToolset::Agent,

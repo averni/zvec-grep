@@ -826,6 +826,7 @@ mod tests {
         let config = ServerConfig::new(
             "127.0.0.1:7999".parse().expect("listen address"),
             home.path().to_owned(),
+            "localhost".to_owned(),
         );
         let path = instance_path(home.path());
         std::fs::create_dir_all(path.parent().expect("daemon directory"))
@@ -867,6 +868,7 @@ mod tests {
         let config = ServerConfig::new(
             "127.0.0.1:7999".parse().expect("listen address"),
             home.path().to_owned(),
+            "localhost".to_owned(),
         );
         let path = instance_path(home.path());
         std::fs::create_dir_all(path.parent().expect("daemon directory"))
@@ -923,6 +925,7 @@ mod tests {
         let config = ServerConfig::new(
             "127.0.0.1:7999".parse().expect("listen address"),
             home.path().to_owned(),
+            "localhost".to_owned(),
         );
         let lock = InstanceLock::acquire(&config).await.expect("instance lock");
 
@@ -967,6 +970,7 @@ mod tests {
         let config = ServerConfig::new(
             "127.0.0.1:7999".parse().expect("listen address"),
             home.path().to_owned(),
+            "localhost".to_owned(),
         );
 
         // Poll the first acquisition once so it publishes the lock file and
@@ -997,6 +1001,7 @@ mod tests {
         let config = ServerConfig::new(
             "127.0.0.1:7999".parse().expect("listen address"),
             home.path().to_owned(),
+            "localhost".to_owned(),
         );
 
         // Cancel an acquisition after it publishes the lock file. Its record

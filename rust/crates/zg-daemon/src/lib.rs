@@ -79,7 +79,7 @@ impl FromStr for ListenAddress {
         let socket = normalized
             .parse::<SocketAddr>()
             .map_err(|_| DaemonError::InvalidListen(value.to_owned()))?;
-        if !socket.ip().is_loopback() || socket.port() == 0 {
+        if socket.port() == 0 {
             return Err(DaemonError::InvalidListen(value.to_owned()));
         }
         Ok(Self {
@@ -93,6 +93,7 @@ impl FromStr for ListenAddress {
 pub struct ServerConfig {
     pub listen: ListenAddress,
     pub home: PathBuf,
+    pub hostname: String,
     /// None reuses an existing daemon profile and defaults new daemons to agent.
     pub mcp_toolset: Option<McpToolset>,
     pub token_file: Option<PathBuf>,
@@ -100,10 +101,11 @@ pub struct ServerConfig {
 
 impl ServerConfig {
     #[must_use]
-    pub const fn new(listen: ListenAddress, home: PathBuf) -> Self {
+    pub const fn new(listen: ListenAddress, home: PathBuf, hostname: String) -> Self {
         Self {
             listen,
             home,
+            hostname: hostname,
             mcp_toolset: None,
             token_file: None,
         }
